@@ -5,6 +5,7 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 
 import com.ar.unlam.objects.ControlBiometrico;
+import com.ar.unlam.objects.RegistroDeIngreso;
 import com.ar.unlam.objects.TipoDeEmpleado;
 import com.ar.unlam.objects.Usuario;
 
@@ -16,10 +17,6 @@ public class ControlBiometricoTest {
      * 	el correcto funcionamiento de la clase principal ControlBiometrico.
      * 
      * 	@Author: Skurnik, Franco Daniel.
-     */
-
-    /*
-     * Se debe continuar el proyecto a partir de la funcionalidad buscar usuario.
      */
 
     @Test
@@ -36,7 +33,7 @@ public class ControlBiometricoTest {
     }
 
     @Test
-    public void queNoSePuedaAgregarUnUsuarioAlControlBiometrico() {
+    public void queNoSePuedaAgregarUnUsuarioSinDatosAlControlBiometrico() {
 	ControlBiometrico controlBiometrico = dadoQueExisteUnControlBiometrico();
 	cuandoAgregoUnUsuarioSinDatosEn(controlBiometrico);
 	entoncesNoHayUsuariosRegistradosEn(controlBiometrico);
@@ -59,23 +56,62 @@ public class ControlBiometricoTest {
     @Test
     public void queSePuedaEncontrarAlGerenteQueTieneElSueldoMayor() {
 	ControlBiometrico controlBiometrico = dadoQueExisteUnControlBiometrico();
-	
-	// cuando agregamos un gerente al control biometrico
 	cuandoAgregoGerentesAlControlBiometrico(controlBiometrico);
-	
-	// entonces puedo encontrar al gerente que tiene el sueldo mayor.
-	
 	entoncesPuedoEncontrarAlGerenteQueGanaMas(controlBiometrico);
-	
     }
     
     @Test
     public void queNoSePuedaEncontrarAlGerenteQueTieneElSueldoMayor() {
 	ControlBiometrico controlBiometrico = dadoQueExisteUnControlBiometrico();
-	
-	cuandoAgregoUsuariosNoGerentesAlControlBiometrico(controlBiometrico);
-	
+	cuandoNoAgregoGerentesAl(controlBiometrico);
 	entoncesNoPuedoEncontrarANingunGerenteEnEl(controlBiometrico);
+    }
+    
+    @Test
+    public void queSePuedaRegistrarUnNuevoRegistroDeIngreso() {
+	ControlBiometrico controlBiometrico = dadoQueExisteUnControlBiometrico();
+	cuandoAgregoUnUsuarioConDatosEn(controlBiometrico);
+	cuandoAgregoUnNuevoRegistroDeIngreso(controlBiometrico);
+	entoncesExistenRegistrosDeIngresosEn(controlBiometrico);
+    }
+    
+    @Test
+    public void queNoSePuedaRegistrarUnNuevoRegistroDeIngresoConFechaInvalida() {
+	ControlBiometrico controlBiometrico = dadoQueExisteUnControlBiometrico();
+	cuandoAgregoUnUsuarioConDatosEn(controlBiometrico);
+	cuandoAgregoUnNuevoRegistroDeIngresoConFechaInvalidaEn(controlBiometrico);
+	entoncesNoExistenRegistroDeIngresoEn(controlBiometrico);
+    }
+    
+    @Test
+    public void queNoSePuedaRegistrarUnNuevoRegistroDeIngresoConNumeroDeUsuarioInvalido() {
+	ControlBiometrico controlBiometrico = dadoQueExisteUnControlBiometrico();
+	cuandoAgregoUnUsuarioConDatosEn(controlBiometrico);
+	cuandoAgregoUnRegistroDeIngresoConNumeroDeUsuarioIncorrectoEn(controlBiometrico);
+	entoncesNoExistenRegistroDeIngresoEn(controlBiometrico);
+    }
+
+    private void cuandoAgregoUnRegistroDeIngresoConNumeroDeUsuarioIncorrectoEn(ControlBiometrico controlBiometrico) {
+	controlBiometrico.registrarUnNuevoIngreso(new RegistroDeIngreso(2000, 03, 30));	
+    }
+
+    private void entoncesNoExistenRegistroDeIngresoEn(ControlBiometrico controlBiometrico) {
+	assertEquals(false, controlBiometrico.hayRegistrosDeIngresos());
+	
+    }
+
+    private void cuandoAgregoUnNuevoRegistroDeIngresoConFechaInvalidaEn(ControlBiometrico controlBiometrico) {
+	controlBiometrico.registrarUnNuevoIngreso(new RegistroDeIngreso(1998, 2, 29));
+	
+    }
+
+    private void entoncesExistenRegistrosDeIngresosEn(ControlBiometrico controlBiometrico) {
+	assertEquals(true, controlBiometrico.hayRegistrosDeIngresos());
+	
+    }
+
+    private void cuandoAgregoUnNuevoRegistroDeIngreso(ControlBiometrico controlBiometrico) {
+	controlBiometrico.registrarUnNuevoIngreso(new RegistroDeIngreso(1998, 2, 28));	
     }
 
     private void entoncesNoPuedoEncontrarANingunGerenteEnEl(ControlBiometrico controlBiometrico) {
@@ -83,7 +119,7 @@ public class ControlBiometricoTest {
 	
     }
 
-    private void cuandoAgregoUsuariosNoGerentesAlControlBiometrico(ControlBiometrico controlBiometrico) {
+    private void cuandoNoAgregoGerentesAl(ControlBiometrico controlBiometrico) {
 	controlBiometrico.agregarUsuario(new Usuario(2000, "Bazan", TipoDeEmpleado.OPERARIO, 45000.00));
 	controlBiometrico.agregarUsuario(new Usuario(1998, "Skurnik", TipoDeEmpleado.OPERARIO, 50000.00));
 	
